@@ -1,0 +1,2 @@
+export const getQueryParamsObject = (queryParamsString: string) => 
+    JSON.parse('{"' + queryParamsString.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) });
