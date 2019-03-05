@@ -8,7 +8,7 @@ const GET_PHOTOS: string = "photos/GET_PHOTOS";
 
 export const selectPhoto = (photo: IPhoto) => async (dispatch) => dispatch({
     type: SELECT_PHOTO,
-    
+    photo
 });
 
 export const getPhotos = () => (dispatch) => {
@@ -22,17 +22,22 @@ export const getPhotos = () => (dispatch) => {
 
 interface IPhotosState {
     photos: IPhoto[];
+    selectedPhotos: IPhoto[];
 }
 
 const defaultState: IPhotosState = {
-    photos:[]
+    photos:[], 
+    selectedPhotos:[]
 };
 
 export default (state: IPhotosState = defaultState, action) => {
     switch (action.type) {
         case SELECT_PHOTO:
             return {
-                ...state
+                ...state, 
+                selectedPhotos: state.selectedPhotos.includes(action.photo) 
+                    ? state.selectedPhotos 
+                    : [...state.selectedPhotos, action.photo]
             };
 
         case GET_PHOTOS:

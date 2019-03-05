@@ -13,12 +13,6 @@ class PhotosComponent extends Component<IPhotosComponentProps> {
         this.props.getPhotos();
     }
 
-    constructor(props: IPhotosComponentProps) {
-        super(props);
-
-
-    }
-
     render() {
         return (
             <div>

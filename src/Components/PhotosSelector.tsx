@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {connect} from "react-redux";
 import Gallery from 'react-grid-gallery';
 import {IPhoto, Photo} from "../data/Photo";
+import {selectPhoto} from "../redux/photos";
 
 interface IGalleryImage {
     src: string;
@@ -13,21 +14,23 @@ interface IGalleryImage {
 
 interface IPhotosSelectorProps {
     photos: IPhoto[]
-    selectPhoto: () => void;
+    selectedPhotos: IPhoto[]
+    selectPhoto: (photo: IPhoto) => void;
 }
 
 interface IPhotosSelectorState {
     images: IGalleryImage[];
 }
 
-const mapPhotoToGalleryImage = (photo: IPhoto): IGalleryImage => {
+const mapPhotoToGalleryImage = (photo: IPhoto, isSelected: boolean = false): IGalleryImage => {
     const fullSized = Photo.getFullSize(photo);
     const thumbnail = Photo.getThumbnail(photo);
     return {
         src: fullSized.url, 
         thumbnail: thumbnail.url, 
         thumbnailHeight: thumbnail.height, 
-        thumbnailWidth: thumbnail.width
+        thumbnailWidth: thumbnail.width, 
+        isSelected
     };
 };
 
@@ -35,7 +38,12 @@ class PhotosSelector extends Component<IPhotosSelectorProps, IPhotosSelectorStat
     componentWillReceiveProps(nextProps: IPhotosSelectorProps) {
         if (!this.props.photos.length && nextProps.photos.length)
             this.setState({
-                images: nextProps.photos.map(mapPhotoToGalleryImage)
+                images: nextProps.photos.map(p => mapPhotoToGalleryImage(p))
+            });
+        
+        if (nextProps.photos.length && !this.props.selectedPhotos.length && nextProps.selectedPhotos.length)
+            this.setState({
+                images: nextProps.photos.map(p => mapPhotoToGalleryImage(p, nextProps.selectedPhotos.includes(p)))
             });
     }
     
@@ -48,8 +56,8 @@ class PhotosSelector extends Component<IPhotosSelectorProps, IPhotosSelectorStat
     }
     
     onChange = (index: number) => {
-        var images = this.state.images.slice();
-        var img = images[index];
+        const images = this.state.images.slice();
+        const img = images[index];
         if(img.hasOwnProperty("isSelected"))
             img.isSelected = !img.isSelected;
         else
@@ -58,6 +66,8 @@ class PhotosSelector extends Component<IPhotosSelectorProps, IPhotosSelectorStat
         this.setState({
             images: images
         });
+        
+        this.props.selectPhoto(this.props.photos[index]);
     };
 
     render() {
@@ -73,7 +83,8 @@ class PhotosSelector extends Component<IPhotosSelectorProps, IPhotosSelectorStat
 }
 
 export default connect(state => ({
-    photos: state.photos.photos
+    photos: state.photos.photos, 
+    selectedPhotos: state.photos.selectedPhotos
 }), {
-    
+    selectPhoto
 })(PhotosSelector);
