@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import './App.css';
-import {getQueryParamsObject} from "./utils/QueryParamsHelper";
-import {WallApi} from "./Api/VkApi";
+import GroupsComponent from "./Components/GroupsComponent";
 
 interface IAppState {
-    token: string;
+    userId: string;
 }
 
 class App extends Component<{}, IAppState> {
@@ -14,11 +13,7 @@ class App extends Component<{}, IAppState> {
     constructor(props: {}) {
         super(props);
         
-        const hash = window.location.hash;
-        const hashParams = hash && getQueryParamsObject(hash.substring(1));
-        const token = hashParams && hashParams["access_token"];
-        
-        this.state = {token};
+        this.state = {userId: null};
     }
     render() {
         return (
@@ -29,10 +24,12 @@ class App extends Component<{}, IAppState> {
               </p>
             </header>
               <main className="App-main">
+                  {this.state.userId && <GroupsComponent />}
                   
-                  <Button onClick={(e: {}) => (window as any).VK.Auth.login(null, 8192)}>Login1</Button>
+                  
+                  <Button onClick={(e: {}) => (window as any).VK.Auth.login(r => this.setState({userId: r.session.user.id}), 8192 + 262144 + 4)}>Login1</Button>
                   <br />
-                  {this.state.token || ""}
+                  {this.state.userId || ""}
                   <br />
                   <Button onClick={(e: {}) => (window as any).VK.Api.call("wall.post", {owner_id: -179220415, message: "ooh", v: "5.92"}, (r: {}) => console.log(r))}>Post</Button>
               </main>

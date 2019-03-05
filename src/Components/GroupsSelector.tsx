@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import {connect} from "react-redux";
 import { Select } from 'antd';
 import {IGroup} from "../data/Group";
+import {selectGroups} from "../redux/groups";
 
 interface IGroupsSelectorProps {
     groups: IGroup[]
@@ -9,9 +11,8 @@ interface IGroupsSelectorProps {
 }
 
 class GroupsSelector extends Component<IGroupsSelectorProps> {
-    onChange = (newValue: string) => {
-        const separatedValues = newValue.split(",");
-        const selectedGroups = separatedValues.reduce((acc: IGroup[], v: string) => {
+    onChange = (newValue: number[]) => {
+        const selectedGroups = newValue.reduce((acc: IGroup[], v: number) => {
             const group = this.props.groups.find(g => g.id === v);
             if (group)
                 return [...acc,  group];
@@ -25,7 +26,7 @@ class GroupsSelector extends Component<IGroupsSelectorProps> {
       const Option = Select.Option;
     return (
       <div>
-        <Select size="large" mode="multiple" onChange={this.onChange} value={selectedGroups.map(g => g.id).join(",")}>
+        <Select size="large" mode="multiple" onChange={this.onChange} value={selectedGroups.map(g => g.id)} style={{width: 500}}>
             {groups.map(g => (
                 <Option value={g.id} key={g.id}>
                     {g.name}
@@ -37,4 +38,9 @@ class GroupsSelector extends Component<IGroupsSelectorProps> {
   }
 }
 
-export default GroupsSelector;
+export default connect(state => ({
+    groups: state.groups.groups, 
+    selectedGroups: state.groups.selectedGroups
+}), {
+    onChange: selectGroups
+})(GroupsSelector);
