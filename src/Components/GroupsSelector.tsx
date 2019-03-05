@@ -26,7 +26,7 @@ class GroupsSelector extends Component<IGroupsSelectorProps> {
       const Option = Select.Option;
     return (
       <div>
-        <Select size="large" mode="multiple" onChange={this.onChange} value={selectedGroups.map(g => g.id)} style={{width: 500}}>
+        <Select size="large" mode="multiple" onChange={this.onChange} value={selectedGroups.map(g => g.id)} style={{width: 200}}>
             {groups.map(g => (
                 <Option value={g.id} key={g.id}>
                     {g.name}
