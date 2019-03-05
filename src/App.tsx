@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { Button } from 'antd';
 import './App.css';
 import GroupsComponent from "./Components/GroupsComponent";
+import PhotosComponent from "./Components/PhotosComponent";
 
 interface IAppState {
     userId: string;
 }
 
 class App extends Component<{}, IAppState> {
-    loginHref = "https://oauth.vk.com/authorize?client_id=6886309&display=page&redirect_uri=http://localhost:3000&scope=wall&response_type=token&v=5.92&state=123456";
-    
     constructor(props: {}) {
         super(props);
         
@@ -25,6 +24,7 @@ class App extends Component<{}, IAppState> {
             </header>
               <main className="App-main">
                   {this.state.userId && <GroupsComponent />}
+                  {this.state.userId && <PhotosComponent />}
                   
                   
                   <Button onClick={(e: {}) => (window as any).VK.Auth.login(r => this.setState({userId: r.session.user.id}), 8192 + 262144 + 4)}>Login1</Button>

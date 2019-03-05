@@ -4,6 +4,6 @@ export enum AttachmentType {
 
 export interface IAttachment {
     type: AttachmentType;
-    ownerId: string;
-    id: string;
+    ownerId: number;
+    id: number;
 }
